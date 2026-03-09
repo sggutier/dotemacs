@@ -243,6 +243,52 @@ The DWIM behaviour of this command is as follows:
 (recentf-mode t)
 (keymap-global-set "C-c f r" #'recentf)
 
+;;; Terminal
+
+;; clipetty forwards Emacs kill-ring entries to the system clipboard
+;; via terminal escape sequences (OSC 52).  Essential when running
+;; Emacs inside tmux or a remote SSH session.
+(use-package clipetty
+  :ensure '(:host github :repo "spudlyo/clipetty"
+                  :ref "01b39044b9b65fa4ea7d3166f8b1ffab6f740362" :pin t)
+  :hook (elpaca-after-init-hook . global-clipetty-mode))
+
+(defun saulg/find-next-vterm-number ()
+  "Return the smallest positive integer N with no buffer named *vterm*<N>.
+Scans existing buffers, collects numbers from names matching the
+pattern *vterm*<N>, then returns the first positive integer absent
+from that set."
+  (let ((existing '())
+        (regex "^\\*vterm\\*<\\([0-9]+\\)>\\'"))
+    (dolist (buf (buffer-list))
+      (let ((name (buffer-name buf)))
+        (when (string-match regex name)
+          (let ((n (string-to-number (match-string 1 name) 10)))
+            (when (> n 0)
+              (push n existing))))))
+    (let ((next 1))
+      (while (member next existing)
+        (setq next (1+ next)))
+      next)))
+
+(defun saulg/vterm-new ()
+  "Open a new vterm buffer, auto-numbering it to avoid name conflicts."
+  (interactive)
+  (vterm (saulg/find-next-vterm-number)))
+
+(use-package vterm
+  :ensure '(:host github :repo "akermu/emacs-libvterm"
+                  :ref "056ad74653704bc353d8ec8ab52ac75267b7d373" :pin t)
+  :commands vterm-mode
+  :bind
+  (("C-c ESC" . vterm-send-escape)
+   ("C-c o t" . saulg/vterm-new))
+  :config
+  ;; Kill the buffer automatically when the shell process exits.
+  (setq vterm-kill-buffer-on-exit t)
+  ;; 5000 lines of scrollback instead of the default 1000.
+  (setq vterm-max-scrollback 5000))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
