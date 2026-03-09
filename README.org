@@ -5,6 +5,18 @@
 My personal Emacs configuration, built around [[https://github.com/progfolio/elpaca][Elpaca]] for package
 management and a small module system for per-machine opt-in features.
 
+* Why
+
+Previously I used [[https://github.com/doomemacs/doomemacs][Doom Emacs]] (great project, huge respect to Henrik
+Lissner).  Over time I kept disabling more and more of it until the
+framework was doing less for me than it cost in complexity.  So I
+started fresh with vanilla Emacs plus only the packages I actually use.
+
+Elpaca handles packages, =use-package= configures them, and each feature
+area gets its own module file.  A gitignored =local.el= picks which
+modules to load per machine, which also makes it easy to layer on
+work-specific config from a separate internal repo.
+
 * Requirements
 
 - Emacs 29+
@@ -23,7 +35,9 @@ management and a small module system for per-machine opt-in features.
 └── modules/
     ├── workspaces.el      # Named workspaces via persp-mode
     ├── lsp-setup.el       # lsp-bridge, yasnippet, flycheck
-    ├── lang-go.el         # Go, Protobuf, YAML, Bazel, Sapling utilities
+    ├── lang-go.el         # Go, Protobuf, YAML, Bazel (requires sapling)
+    ├── sapling.el         # Sapling/Git project root, path helpers
+    ├── markdown.el        # markdown-mode + commit message handling
     ├── org-setup.el       # Org journal, capture, calendar, presentations
     └── work/              # Gitignored — clone your internal repo here
 #+end_src
@@ -44,6 +58,8 @@ Then create a =local.el= to choose which modules to load:
 
 (require 'workspaces)
 (require 'lsp-setup)
+(require 'sapling)
+(require 'markdown)
 (require 'lang-go)
 (require 'org-setup)
 #+end_src

@@ -67,6 +67,8 @@
 ;;
 ;;   (require 'workspaces)
 ;;   (require 'lsp-setup)
+;;   (require 'sapling)
+;;   (require 'markdown)
 ;;   (require 'lang-go)
 ;;   (require 'org-setup)
 ;;
