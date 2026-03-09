@@ -68,7 +68,9 @@ git clone <internal-url> ~/.config/emacs/modules/work
 |-----------------+-----------------------------------------------------------|
 | =workspaces=    | Named perspectives (persp-mode); scoped buffer lists      |
 | =lsp-setup=     | lsp-bridge LSP client, yasnippet, flycheck, acm-terminal  |
-| =lang-go=       | Go/Protobuf/YAML/Bazel; Sapling utilities; markdown-mode  |
+| =lang-go=       | Go/Protobuf/YAML/Bazel; depends on =sapling=              |
+| =sapling=       | Sapling/Git project root, path/URL helpers, fixer command |
+| =markdown=      | markdown-mode + Sapling commit message handling           |
 | =org-setup=     | org-journal, org-capture, org-present, ISO calendar       |
 
 * Key bindings
