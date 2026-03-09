@@ -35,6 +35,8 @@ With a prefix ARG, open the full (unfiltered) ibuffer instead."
    ("C-x C-b" . saulg/persp-ibuffer)
    ("C-c w N" . persp-add-new))
   :init
+  (setq persp-state-default-file
+        (expand-file-name "persp-confs/perspective-auto-save" user-emacs-directory))
   (setq persp-keymap-prefix (kbd "C-c w"))
   ;; Disable the workspace-switch animation.
   (setq wg-morph-on nil)
