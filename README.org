@@ -1,0 +1,91 @@
+#+title: Emacs Configuration
+#+author: saulg
+#+options: toc:t
+
+My personal Emacs configuration, built around [[https://github.com/progfolio/elpaca][Elpaca]] for package
+management and a small module system for per-machine opt-in features.
+
+* Requirements
+
+- Emacs 29+
+- Git (for Elpaca bootstrap and tree-sitter grammars)
+
+* Structure
+
+#+begin_src
+~/.config/emacs/
+├── early-init.el          # Pre-package UI tweaks and Dvorak key swap
+├── init.el                # Core config: bootstrap, editor defaults, UI,
+│                          #   completion, files, terminal, navigation
+├── customs-defaults.el    # Committed baseline for custom-set-variables
+├── customs.el             # Gitignored — machine-specific M-x customize output
+├── local.el               # Gitignored — module loading + machine overrides
+└── modules/
+    ├── workspaces.el      # Named workspaces via persp-mode
+    ├── lsp-setup.el       # lsp-bridge, yasnippet, flycheck
+    ├── lang-go.el         # Go, Protobuf, YAML, Bazel, Sapling utilities
+    ├── org-setup.el       # Org journal, capture, calendar, presentations
+    └── work/              # Gitignored — clone your internal repo here
+#+end_src
+
+* Setup
+
+Clone into your Emacs config directory:
+
+#+begin_src sh
+git clone <repo-url> ~/.config/emacs
+#+end_src
+
+On first launch Elpaca will bootstrap itself and install all packages.
+Then create a =local.el= to choose which modules to load:
+
+#+begin_src emacs-lisp
+;; ~/.config/emacs/local.el
+
+(require 'workspaces)
+(require 'lsp-setup)
+(require 'lang-go)
+(require 'org-setup)
+#+end_src
+
+** Work machine setup
+
+Clone your internal modules repo into =modules/work/= and load from
+=local.el= as needed:
+
+#+begin_src sh
+git clone <internal-url> ~/.config/emacs/modules/work
+#+end_src
+
+#+begin_src emacs-lisp
+;; in local.el
+(require 'work-module-name)
+#+end_src
+
+* Modules
+
+| Module          | What it provides                                          |
+|-----------------+-----------------------------------------------------------|
+| =workspaces=    | Named perspectives (persp-mode); scoped buffer lists      |
+| =lsp-setup=     | lsp-bridge LSP client, yasnippet, flycheck, acm-terminal  |
+| =lang-go=       | Go/Protobuf/YAML/Bazel; Sapling utilities; markdown-mode  |
+| =org-setup=     | org-journal, org-capture, org-present, ISO calendar       |
+
+* Key bindings
+
+| Key           | Command                                  |
+|---------------+------------------------------------------|
+| =M-.= / =M-,= | Jump to definition / return              |
+| =C-c c k=     | Jump to type definition                  |
+| =C-c c r=     | Rename symbol                            |
+| =C-c c a=     | Code action                              |
+| =C-c c n/p=   | Next / previous diagnostic               |
+| =C-c s f/F=   | Find file in current dir / prompt        |
+| =C-c s r/R=   | Ripgrep in current dir / prompt          |
+| =C-c o t=     | Open new vterm                           |
+| =C-c w N=     | New workspace (persp-mode)               |
+| =C-x b=       | Switch buffer (workspace-scoped)         |
+| =C-c n r=     | org-capture                              |
+| =C-c C-k=     | claude-code-ide menu                     |
+| =M-o=         | Switch window                            |
+| =C-c m l=     | Multiple cursors: edit lines in region   |

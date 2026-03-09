@@ -62,10 +62,23 @@
 ;; with (require 'feature-name).
 (add-to-list 'load-path (expand-file-name "modules/" user-emacs-directory))
 
-(require 'workspaces)
-(require 'lsp-setup)
-(require 'lang-go)
-(require 'org-setup)
+;; Modules are opt-in per machine.  Load them from local.el so this
+;; file stays machine-agnostic.  Example local.el:
+;;
+;;   (require 'workspaces)
+;;   (require 'lsp-setup)
+;;   (require 'lang-go)
+;;   (require 'org-setup)
+;;
+;; Work-specific modules live in modules/work/ (a separate git clone).
+;; Add them the same way:
+;;
+;;   (require 'work-module-name)
+
+;; Load local.el last so it can override anything set above.
+(let ((local (expand-file-name "local.el" user-emacs-directory)))
+  (when (file-exists-p local)
+    (load local)))
 
 ;;; Core UX
 
