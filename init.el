@@ -177,6 +177,41 @@ The DWIM behaviour of this command is as follows:
   (visual-fill-column-width 110)
   (visual-fill-column-center-text t))
 
+;;; Completion
+
+;; Vertico: minimal vertical completion UI for the minibuffer.
+(use-package vertico
+  :ensure '(:host github :repo "minad/vertico" :tag "2.0" :pin t)
+  :init
+  (vertico-mode))
+
+;; Marginalia: adds annotations (file sizes, docstrings, keybindings,
+;; etc.) to minibuffer completion candidates.
+(use-package marginalia
+  :ensure t
+  :bind (:map minibuffer-local-map
+              ("M-A" . marginalia-cycle))
+  :init
+  (marginalia-mode))
+
+;; Corfu: in-buffer completion popup, complementing vertico which
+;; handles the minibuffer.
+(use-package corfu
+  :ensure t
+  :init
+  (global-corfu-mode))
+
+;; Orderless: match completion candidates by space-separated components
+;; in any order.  "go buf" matches "switch-to-buffer", "find-go-file", etc.
+;; Falls back to partial-completion for file paths so /u/s/e still
+;; expands to /usr/share/emacs.
+(use-package orderless
+  :ensure t
+  :custom
+  (completion-styles '(orderless basic))
+  (completion-category-defaults nil)
+  (completion-category-overrides '((file (styles partial-completion)))))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
