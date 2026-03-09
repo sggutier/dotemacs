@@ -156,6 +156,27 @@ The DWIM behaviour of this command is as follows:
   :ensure t
   :hook (prog-mode-hook . ws-butler-mode))
 
+;;; UI — Theme and visual modes
+
+;; A warm light theme with good contrast.
+(use-package doom-themes
+  :ensure t
+  :config
+  (load-theme 'doom-gruvbox-light t))
+
+;; Distraction-free writing: narrows the buffer to a centred column
+;; and hides UI chrome.  Activate per-buffer with M-x writeroom-mode.
+(use-package writeroom-mode
+  :ensure t)
+
+;; Soft-wrap lines at a configurable column width and optionally centre
+;; the text block.  Used standalone or as a visual component of org-present.
+(use-package visual-fill-column
+  :ensure t
+  :custom
+  (visual-fill-column-width 110)
+  (visual-fill-column-center-text t))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
