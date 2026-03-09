@@ -67,6 +67,95 @@
 (require 'lang-go)
 (require 'org-setup)
 
+;;; Core UX
+
+;; use-package emacs :ensure nil targets built-in Emacs behaviour without
+;; involving Elpaca.  Good for settings that must take effect before any
+;; package-provided mode activates.
+(use-package emacs
+  :ensure nil
+  :custom
+  ;; TAB indents if the line needs it, completes otherwise.
+  ;; Pairs naturally with corfu for in-buffer completion.
+  (tab-always-indent 'complete)
+
+  ;; Emacs 30+: stop ispell from offering completions in text-mode.
+  ;; Use cape-dict if you want dictionary completion instead.
+  (text-mode-ispell-word-completion nil)
+
+  ;; Hide M-x commands that don't apply to the current mode.
+  ;; Makes the command list much less noisy.
+  (read-extended-command-predicate #'command-completion-default-include-p))
+
+(defun prot/keyboard-quit-dwim ()
+  "Do-What-I-Mean behaviour for a general `keyboard-quit'.
+
+The generic `keyboard-quit' does not do the expected thing when
+the minibuffer is open.  Whereas we want it to close the
+minibuffer, even without explicitly focusing it.
+
+The DWIM behaviour of this command is as follows:
+
+- When the region is active, disable it.
+- When a minibuffer is open, but not focused, close the minibuffer.
+- When the Completions buffer is selected, close it.
+- In every other case use the regular `keyboard-quit'."
+  (interactive)
+  (cond
+   ((region-active-p)
+    (keyboard-quit))
+   ((derived-mode-p 'completion-list-mode)
+    (delete-completion-window))
+   ((> (minibuffer-depth) 0)
+    (abort-recursive-edit))
+   (t
+    (keyboard-quit))))
+
+;; Replace the default C-g with the smarter version above.
+(define-key global-map [remap keyboard-quit] #'prot/keyboard-quit-dwim)
+
+;; Accept y/n instead of typing out yes/no for confirmations.
+(setopt use-short-answers t)
+
+;; Show available key continuations after a prefix key (e.g. C-c).
+(which-key-mode 1)
+
+;; Auto-close brackets, quotes, and other paired delimiters.
+(electric-pair-mode 1)
+
+;; Scroll one line at a time rather than jumping half a screen.
+(setq scroll-step 1)
+(setq scroll-conservatively 30000)
+(setq auto-window-vscroll nil)
+
+;; Show line numbers in programming buffers.
+(add-hook 'prog-mode-hook #'display-line-numbers-mode)
+
+;; Show the column number in the mode line.
+(setq column-number-mode t)
+
+;; C-x C-_ toggles commenting on the current line or region.
+;; (C-x C-/ is the built-in binding; _ is more reachable on Dvorak.)
+(keymap-global-set "C-x C-_" #'comment-line)
+
+;; Always use spaces for indentation; never insert tab characters.
+(setq-default indent-tabs-mode nil)
+
+;; Enable mouse support when running inside a terminal emulator.
+(unless (display-graphic-p)
+  (xterm-mouse-mode 1))
+
+;; Redirect auto-save files to a dedicated subdirectory so they don't
+;; scatter # files across source trees.
+(let ((dir (file-name-concat user-emacs-directory "auto-save/")))
+  (make-directory dir :parents)
+  (setq auto-save-file-name-transforms `((".*" ,dir t))))
+
+;; Silently strip trailing whitespace from modified lines on save.
+(use-package ws-butler
+  :ensure t
+  :hook (prog-mode-hook . ws-butler-mode))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
