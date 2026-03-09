@@ -330,6 +330,36 @@ from that set."
   :ensure t
   :bind (("C-c m l" . mc/edit-lines)))
 
+;;; Miscellaneous integrations
+
+;; Emacs 29 ships an older version of transient.  Installing it
+;; separately here ensures claude-code-ide gets the version it needs.
+(use-package transient
+  :ensure t)
+
+(use-package claude-code-ide
+  :ensure (:host github :repo "manzaltu/claude-code-ide.el")
+  :bind ("C-c C-k" . claude-code-ide-menu)
+  :config
+  ;; Register Emacs-side MCP tools so Claude Code can interact with
+  ;; the current buffer, project, etc.
+  (claude-code-ide-emacs-tools-setup))
+
+;;; Persistence — periodic saves of ephemeral state
+
+(defun saulg/save-timed-stuff ()
+  "Persist state that Emacs does not automatically flush to disk.
+Called on a repeating timer so nothing is lost if Emacs is killed."
+  (recentf-save-list)
+  ;; persp-mode is optional (loaded via modules/workspaces.el).
+  ;; Guard with fboundp so this timer is safe even if workspaces is
+  ;; not loaded.
+  (when (fboundp 'persp-save-state-to-file)
+    (persp-save-state-to-file)))
+
+;; Run immediately on startup (delay 0) and then every 30 minutes.
+(run-with-timer 0 (* 30 60) #'saulg/save-timed-stuff)
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
