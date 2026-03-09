@@ -212,6 +212,37 @@ The DWIM behaviour of this command is as follows:
   (completion-category-defaults nil)
   (completion-category-overrides '((file (styles partial-completion)))))
 
+;;; File management
+
+(use-package dired
+  :ensure nil
+  :init
+  ;; dired-x provides extra commands including dired-omit-mode, which
+  ;; hides uninteresting files.
+  (require 'dired-x)
+  :bind (:map dired-mode-map
+              ;; 'h' toggles hiding of dot-files (mnemonic: hidden).
+              ("h" . dired-omit-mode))
+  :config
+  ;; When dired-omit-mode is on, also hide dot-files in addition to
+  ;; the default set of omitted extensions.
+  (setq dired-omit-files
+        (concat dired-omit-files "\\|^\\..+$")))
+
+;; Show a live preview of the file at point in a side window.
+(use-package dired-preview
+  :ensure t
+  :bind (:map dired-mode-map
+              ("p" . dired-preview-mode)))
+
+;; Reuse the current buffer when descending into a directory instead
+;; of creating a new one.  Disabled by default for safety; re-enable here.
+(put 'dired-find-alternate-file 'disabled nil)
+
+;; Keep a list of recently visited files.
+(recentf-mode t)
+(keymap-global-set "C-c f r" #'recentf)
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
