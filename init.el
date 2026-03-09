@@ -289,6 +289,47 @@ from that set."
   ;; 5000 lines of scrollback instead of the default 1000.
   (setq vterm-max-scrollback 5000))
 
+;;; Navigation and search
+
+(defun saulg/consult-rg-current ()
+  "Run `consult-ripgrep' in the directory of the current file."
+  (interactive)
+  (consult-ripgrep (file-name-directory default-directory)))
+
+(defun saulg/consult-rg-other ()
+  "Run `consult-ripgrep', prompting for a directory."
+  (interactive)
+  (consult-ripgrep t))
+
+(use-package consult
+  :ensure t
+  :bind
+  ;; C-c s f / F: find files in current dir / prompt for dir
+  (("C-c s f" . (lambda () (interactive) (consult-fd (file-name-directory default-directory))))
+   ("C-c s F" . (lambda () (interactive) (consult-fd t)))
+   ;; C-c s d / D: ripgrep in current dir / prompt for dir
+   ("C-c s d" . saulg/consult-rg-current)
+   ("C-c s D" . saulg/consult-rg-other)))
+
+;; switch-window: when more than 2 windows are open, overlay each with
+;; a letter so you can jump to it by pressing that letter.
+;; Key order is Dvorak home-row first.
+(use-package switch-window
+  :ensure t
+  :bind (("M-o" . switch-window))
+  :init
+  (setq switch-window-shortcut-appearance 'asciiart)
+  (setq switch-window-shortcut-style 'qwerty)
+  (setq switch-window-qwerty-shortcuts
+        '("a" "o" "e" "u" "h" "t" "n" "s" "i" "d"
+          ";" "," "." "p" "l" "r" "c" "g" "y" "f"
+          "'" "q" "j" "k" "z" "v" "w" "m" "x" "b")))
+
+;; Edit multiple occurrences of a selection simultaneously.
+(use-package multiple-cursors
+  :ensure t
+  :bind (("C-c m l" . mc/edit-lines)))
+
 ;; Local Variables:
 ;; no-byte-compile: t
 ;; no-native-compile: t
