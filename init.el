@@ -167,6 +167,7 @@ The DWIM behaviour of this command is as follows:
   (setq auto-save-file-name-transforms `((".*" ,dir t))))
 
 ;; Silently strip trailing whitespace from modified lines on save.
+;; Installed from NonGNU ELPA; version 1.3.
 (use-package ws-butler
   :ensure t
   :hook (prog-mode-hook . ws-butler-mode))
@@ -175,19 +176,22 @@ The DWIM behaviour of this command is as follows:
 
 ;; A warm light theme with good contrast.
 (use-package doom-themes
-  :ensure t
+  :ensure '(:host github :repo "doomemacs/themes"
+                  :ref "53645a905dfb3055db52f5d418d5ef612027e062" :pin t)
   :config
   (load-theme 'doom-gruvbox-light t))
 
 ;; Distraction-free writing: narrows the buffer to a centred column
 ;; and hides UI chrome.  Activate per-buffer with M-x writeroom-mode.
 (use-package writeroom-mode
-  :ensure t)
+  :ensure '(:host github :repo "joostkremers/writeroom-mode"
+                  :ref "cca2b4b3cfcfea1919e1870519d79ed1a69aa5e2" :pin t))
 
 ;; Soft-wrap lines at a configurable column width and optionally centre
 ;; the text block.  Used standalone or as a visual component of org-present.
 (use-package visual-fill-column
-  :ensure t
+  :ensure '(:host codeberg :repo "joostkremers/visual-fill-column"
+                  :ref "e1be9a1545157d24454d950c0ac79553c540edb7" :pin t)
   :custom
   (visual-fill-column-width 110)
   (visual-fill-column-center-text t))
@@ -203,7 +207,8 @@ The DWIM behaviour of this command is as follows:
 ;; Marginalia: adds annotations (file sizes, docstrings, keybindings,
 ;; etc.) to minibuffer completion candidates.
 (use-package marginalia
-  :ensure t
+  :ensure '(:host github :repo "minad/marginalia"
+                  :ref "d28a5e5c1a2e5f3e6669b0197f38da84e08f94a0" :pin t)
   :bind (:map minibuffer-local-map
               ("M-A" . marginalia-cycle))
   :init
@@ -212,7 +217,8 @@ The DWIM behaviour of this command is as follows:
 ;; Corfu: in-buffer completion popup, complementing vertico which
 ;; handles the minibuffer.
 (use-package corfu
-  :ensure t
+  :ensure '(:host github :repo "minad/corfu"
+                  :ref "d2a995c5c732d0fc439efe09440870a9de779a74" :pin t)
   :init
   (global-corfu-mode))
 
@@ -221,7 +227,8 @@ The DWIM behaviour of this command is as follows:
 ;; Falls back to partial-completion for file paths so /u/s/e still
 ;; expands to /usr/share/emacs.
 (use-package orderless
-  :ensure t
+  :ensure '(:host github :repo "oantolin/orderless"
+                  :ref "3a2a32181f7a5bd7b633e40d89de771a5dd88cc7" :pin t)
   :custom
   (completion-styles '(orderless basic))
   (completion-category-defaults nil)
@@ -246,7 +253,8 @@ The DWIM behaviour of this command is as follows:
 
 ;; Show a live preview of the file at point in a side window.
 (use-package dired-preview
-  :ensure t
+  :ensure '(:host github :repo "protesilaos/dired-preview"
+                  :ref "b0cba0825d2eea2ac6d9a8ef65a73b6186e6d294" :pin t)
   :bind (:map dired-mode-map
               ("p" . dired-preview-mode)))
 
@@ -317,7 +325,8 @@ from that set."
   (consult-ripgrep t))
 
 (use-package consult
-  :ensure t
+  :ensure '(:host github :repo "minad/consult"
+                  :ref "f8c2ef57e83af3d45e345e5c14089f2f9973682b" :pin t)
   :bind
   ;; C-c s f / F: find files in current dir / prompt for dir
   (("C-c s f" . (lambda () (interactive) (consult-fd (file-name-directory default-directory))))
@@ -330,7 +339,8 @@ from that set."
 ;; a letter so you can jump to it by pressing that letter.
 ;; Key order is Dvorak home-row first.
 (use-package switch-window
-  :ensure t
+  :ensure '(:host github :repo "dimitri/switch-window"
+                  :ref "a72cf11d21c1f24924a9faeaa9f5d213d8623141" :pin t)
   :bind (("M-o" . switch-window))
   :init
   (setq switch-window-shortcut-appearance 'asciiart)
@@ -342,7 +352,8 @@ from that set."
 
 ;; Edit multiple occurrences of a selection simultaneously.
 (use-package multiple-cursors
-  :ensure t
+  :ensure '(:host github :repo "magnars/multiple-cursors.el"
+                  :ref "ddd677091afc7d65ce56d11866e18aeded110ada" :pin t)
   :bind (("C-c m l" . mc/edit-lines)))
 
 ;;; Miscellaneous integrations
@@ -350,10 +361,12 @@ from that set."
 ;; Emacs 29 ships an older version of transient.  Installing it
 ;; separately here ensures claude-code-ide gets the version it needs.
 (use-package transient
-  :ensure t)
+  :ensure '(:host github :repo "magit/transient"
+                  :ref "b4b5cc2624e156d7889b776a3855a3e46a227a05" :pin t))
 
 (use-package claude-code-ide
-  :ensure (:host github :repo "manzaltu/claude-code-ide.el")
+  :ensure '(:host github :repo "manzaltu/claude-code-ide.el"
+                   :ref "5f12e60c6d2d1802c8c1b7944bbdf935d5db1364" :pin t)
   :bind ("C-c C-k" . claude-code-ide-menu)
   :config
   ;; Register Emacs-side MCP tools so Claude Code can interact with
