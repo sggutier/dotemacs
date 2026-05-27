@@ -21,7 +21,8 @@
   (saulg/disable-lsp-bridge))
 
 (use-package markdown-mode
-  :ensure t
+  :ensure '(:host github :repo "jrblevin/markdown-mode"
+                  :ref "1f72cefa6a4b759f90e335e4908725a721b17ad9" :pin t)
   :mode (("\\.md\\'"                  . saulg/commit-sl-txt-modes)
          ("\\.commits\\.sl\\.txt\\'"  . saulg/commit-sl-txt-modes)
          ("README\\.md\\'"            . saulg/readme-md-modes))

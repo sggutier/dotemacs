@@ -31,7 +31,8 @@
 ;;; Journal
 
 (use-package org-journal
-  :ensure t
+  :ensure '(:host github :repo "bastibe/org-journal"
+                  :ref "6460f6f2b0835b4b8aa87d5fdf40cac7deb319f5" :pin t)
   :defer t
   :init
   ;; Prefix key must be set before the package loads.
@@ -76,7 +77,8 @@ Relies on visual-fill-column-mode (configured in init.el)."
   (visual-line-mode 0))
 
 (use-package org-present
-  :ensure t
+  :ensure '(:host github :repo "rlister/org-present"
+                  :ref "4ec04e1b77dea76d7c30066ccf3200d2e0b7bee9" :pin t)
   :hook
   ((org-present-mode                    . saulg/org-present-start)
    (org-present-mode-quit               . saulg/org-present-end)

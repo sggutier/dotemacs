@@ -5,7 +5,8 @@
 ;; yasnippet must be loaded before lsp-bridge because lsp-bridge's
 ;; completion backend (acm) uses it for snippet expansion.
 (use-package yasnippet
-  :ensure t
+  :ensure '(:host github :repo "joaotavora/yasnippet"
+                  :ref "c1e6ff23e9af16b856c88dfaab9d3ad7b746ad37" :pin t)
   :init
   (yas-global-mode 1))
 
@@ -20,6 +21,7 @@
 ;; ships Python files that must not be byte-compiled by Emacs.
 (use-package lsp-bridge
   :ensure '(:host github :repo "manateelazycat/lsp-bridge"
+                  :ref "755b36125821c6e601a69f8261c44d86b203379a" :pin t
                   :files (:defaults "*.el" "*.py" "acm" "core"
                                     "langserver" "multiserver" "resources")
                   :build (:not elpaca--byte-compile))
@@ -42,16 +44,19 @@
 ;; child-frame popup.
 (unless (display-graphic-p)
   (use-package popon
-    :ensure '(:host nil :repo "https://codeberg.org/akib/emacs-popon.git"))
+    :ensure '(:host nil :repo "https://codeberg.org/akib/emacs-popon.git"
+                    :ref "bf8174cb7e6e8fe0fe91afe6b01b6562c4dc39da" :pin t))
   (use-package acm-terminal
-    :ensure '(:host github :repo "twlz0ne/acm-terminal")))
+    :ensure '(:host github :repo "twlz0ne/acm-terminal"
+                    :ref "1851d8fa2a27d3fd8deeeb29cd21c3002b8351ba" :pin t)))
 
 ;;; Diagnostics
 
 ;; flycheck: on-the-fly syntax checking with fringe indicators.
 ;; Complements lsp-bridge diagnostics with checker-specific feedback.
 (use-package flycheck
-  :ensure t
+  :ensure '(:host github :repo "flycheck/flycheck"
+                  :ref "0e5eb8300d32fd562724216c19eaf199ee1451ab" :pin t)
   :init (global-flycheck-mode))
 
 (provide 'lsp-setup)
